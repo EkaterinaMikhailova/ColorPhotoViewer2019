@@ -6,10 +6,10 @@ class Bottom extends Component{
       <div class="navbar navbar-inverse navbar-fixed-bottom">
         <div class="container-fluid">
           <div class="navbar-header">
-          <h6>© ColorPhotoEditor2019 </h6>
+            <h6>© ColorPhotoEditor2019 </h6>
           </div>
-            <h6>kutuzovakristino@gmail.com <br/>katrin_509@mail.ru </h6>
-          </div>
+          <h6>kutuzovakristino@gmail.com <br/>katrin_509@mail.ru </h6>
+        </div>
       </div>
     );
   }
