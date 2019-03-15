@@ -3,6 +3,7 @@ body{
     color: #7b7b7b;
     -webkit-font-smoothing: antialiased; /*шрифт гладкий при увеличении*/
     -webkit-overflow-scrolling: touch; /*норм скроллить даже при помощи тача*/
+    overflow-x: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 { 
@@ -12,7 +13,6 @@ h1, h2, h3, h4, h5, h6 {
 a{ /*ссылки*/
     color: #7b7b7b;
 }
-
 
 a:hover, a:focus { /*при наведении на ссылку и при фокусировке*/
     color: #9238FF;
@@ -36,21 +36,13 @@ a:hover, a:focus { /*при наведении на ссылку и при фо�
     letter-spacing: 1px;
 }
 
-.navbar-fixed-bottom {
-    position: fixed; 
-    bottom:0;
-    width: 100%;
-}
-
 #photostyle{
     text-align: center;
 }
 
 #dg{
     background: #9238FF;
-    position: fixed; 
-    bottom: 45px;
-    width: 100%;
+    overflow: auto;
 }
 
 .tilt{
@@ -81,24 +73,11 @@ a:hover, a:focus { /*при наведении на ссылку и при фо�
     border-color: #555;
 }
 
-#sv{
-    position: absolute;
-    bottom: 1em;
-    text-align: right;
-}
-
 #about{
-    position: absolute;
-    bottom: 10em;
     text-align: center;
     font-size: 20px;
-    width: 100%;
 }
 
 .row {
     text-align: center!important;
-}
-
-.container { 
-    width: 100%; 
 }
