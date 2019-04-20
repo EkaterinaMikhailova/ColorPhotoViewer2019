@@ -1,94 +1,104 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class Filtres extends Component{
+class Filtres extends React.Component{
   render(){ 
     return(
       <div id="dg">
-        <table class="table">
-          <th>
-            <div class="tilt">
-              <a href="#home"><img src="https://img.icons8.com/cotton/64/000000/camera.png" alt=""/></a>
-              <h5>Amaro </h5>
-            </div>
-          </th>
-          <th>
-            <div class="tilt">
-              <a href="#home"><img src="https://img.icons8.com/cotton/64/000000/camera.png" alt=""/></a>
-              <h5>Brannan</h5>
-            </div>
-          </th>
-          <th>
-            <div class="tilt">
-              <a href="#home"><img src="https://img.icons8.com/cotton/64/000000/camera.png" alt=""/></a>
-              <h5>Earlybird </h5>
-            </div>
-          </th>
-          <th>
-            <div class="tilt">
-              <a href="#home"><img src="https://img.icons8.com/cotton/64/000000/camera.png" alt=""/></a>
-              <h5>Hefe </h5>
-            </div>
-          </th>
-          <th>
-            <div class="tilt">
-              <a href="#home"><img src="https://img.icons8.com/cotton/64/000000/camera.png" alt=""/></a>
-              <h5>Hudson </h5>
-            </div>
-          </th>
-          <th>
-            <div class="tilt">
-              <a href="#home"><img src="https://img.icons8.com/cotton/64/000000/camera.png" alt=""/></a>
-              <h5>Inkwell </h5>
-            </div>
-          </th>
-          <th>
-            <div class="tilt">
-              <a href="#home"><img src="https://img.icons8.com/cotton/64/000000/camera.png" alt=""/></a>
-              <h5>Lomo </h5>
-            </div>
-          </th>
-          <th>
-            <div class="tilt">
-              <a href="#home"><img src="https://img.icons8.com/cotton/64/000000/camera.png" alt=""/></a>
-              <h5>Myfair </h5>
-            </div>
-          </th>
-          <th>
-            <div class="tilt">
-              <a href="#home"><img src="https://img.icons8.com/cotton/64/000000/camera.png" alt=""/></a>
-              <h5>Rise </h5>
-            </div>
-          </th>
-          <th>
-            <div class="tilt">
-              <a href="#home"><img src="https://img.icons8.com/cotton/64/000000/camera.png" alt=""/></a>
-              <h5>Sierra </h5>
-            </div>
-          </th>
-          <th>
-            <div class="tilt">
-              <a href="#home"><img src="https://img.icons8.com/cotton/64/000000/camera.png" alt=""/></a>
-              <h5>Toster </h5>
-            </div>
-          </th>
-          <th>
-            <div class="tilt">
-              <a href="#home"><img src="https://img.icons8.com/cotton/64/000000/camera.png" alt=""/></a>
-              <h5>Valencia </h5>
-            </div>
-          </th>
-          <th>
-            <div class="tilt">
-              <a href="#home"><img src="https://img.icons8.com/cotton/64/000000/camera.png" alt=""/></a>
-              <h5>Willow </h5>
-            </div>
-          </th>
-          <th>
-            <div class="tilt">
-              <a href="#home"><img src="https://img.icons8.com/cotton/64/000000/camera.png" alt=""/></a>
-              <h5>XPro</h5>
-            </div>
-          </th>
+        <table className="table">
+          <tbody >
+            <tr>
+              <th>
+                <div className="tilt">
+                  <button id="fiol" onClick={() => {this.props.updateFilter('normal')}}>
+                    <img src="DSFilterTileNormal.png" width="80px" height="80px" alt=""/></button>
+                </div>
+              </th>
+              <th>
+                <div className="tilt">
+                  <button id="fiol" onClick={() => {this.props.updateFilter('amaro')}}>
+                    <img src="DSFilterTileAmaro.png" width="80px" height="80px" alt=""/></button>
+                </div>
+              </th>
+              <th>
+                <div className="tilt">
+                  <button id="fiol" onClick={() => {this.props.updateFilter('brannan')}}>
+                    <img src="DSFilterTileBrannan.png" width="80px" height="80px" alt=""/></button>
+                </div>
+              </th>
+              <th>
+                <div className="tilt">
+                  <button id="fiol" onClick={() => {this.props.updateFilter('earlybird')}}>
+                    <img src="DSFilterTileEarlybird.png" width="80px" height="80px" alt=""/></button>
+                </div>
+              </th>
+              <th>
+                <div className="tilt">
+                  <button id="fiol" onClick={() => {this.props.updateFilter('hefe')}}>
+                    <img src="DSFilterTileHefe.png" width="80px" height="80px" alt=""/></button>
+                </div>
+              </th>
+              <th>
+                <div className="tilt">
+                  <button id="fiol" onClick={() => {this.props.updateFilter('hudson')}}>
+                    <img src="DSFilterTileHudson.png" width="80px" height="80px" alt=""/></button>
+                </div>
+              </th>
+              <th>
+                <div className="tilt">
+                  <button id="fiol" onClick={() =>{this.props.updateFilter('inkwell')}}>
+                    <img src="DSFilterTileInkwell.png" width="80px" height="80px" alt=""/></button>
+                </div>
+              </th>
+              <th>
+                <div className="tilt">
+                  <button id="fiol" onClick={() => {this.props.updateFilter('lokofi')}}>
+                    <img src="DSFilterTileLomoFi.png" width="80px" height="80px" alt=""/></button>
+                </div>
+              </th>
+              <th>
+                <div className="tilt">
+                  <button id="fiol" onClick={() => {this.props.updateFilter('lordkelvin')}}>
+                    <img src="DSFilterTileLordKelvin.png" width="80px" height="80px" alt=""/></button>
+                </div>
+              </th>
+              <th>
+                <div className="tilt">
+                  <button id="fiol" onClick={() => {this.props.updateFilter('rise')}}>
+                    <img src="DSFilterTileRise.png" width="80px" height="80px" alt=""/></button>
+                </div>
+              </th>
+              <th>
+                <div className="tilt">
+                  <button id="fiol" onClick={() => {this.props.updateFilter('sierra')}}>
+                    <img src="DSFilterTileSierra.png" width="80px" height="80px" alt=""/></button>
+                </div>
+              </th>
+              <th>
+                <div className="tilt">
+                  <button id="fiol" onClick={() => {this.props.updateFilter('toaster')}}>
+                    <img src="DSFilterTileToaster.png" width="80px" height="80px" alt=""/></button>
+                </div>
+              </th>
+              <th>
+                <div className="tilt">
+                  <button id="fiol" onClick={() =>{this.props.updateFilter('valencia')}}>
+                    <img src="DSFilterTileValencia.png" width="80px" height="80px" alt=""/></button>
+                </div>
+              </th>
+              <th>
+                <div className="tilt">
+                  <button id="fiol" onClick={() => {this.props.updateFilter('walden')}}>
+                    <img src="DSFilterTileWalden.png" width="80px" height="80px" alt=""/></button>
+                </div>
+              </th>
+              <th>
+                <div className="tilt">
+                  <button id="fiol" onClick={() => {this.props.updateFilter('xproII')}}>
+                    <img src="DSFilterTileXpro2.png" width="80px" height="80px" alt=""/></button>
+                </div>
+              </th>
+            </tr>
+          </tbody >
         </table>
       </div>
     );

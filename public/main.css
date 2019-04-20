@@ -8,6 +8,7 @@ body{
 
 h1, h2, h3, h4, h5, h6 { 
     color: #555;
+    text-align: center;
 }
 
 a{ /*ссылки*/
@@ -22,8 +23,8 @@ a:hover, a:focus { /*при наведении на ссылку и при фо�
 
 .navbar { 
     font-size: 20px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding-top: 1px;
+    padding-bottom: 1px;
 }
 
 .navbar-inverse {
@@ -32,20 +33,23 @@ a:hover, a:focus { /*при наведении на ссылку и при фо�
 
 .navbar-brand {
     color: #999;
-    font-size: 30px;
+    font-size: 32px;
     letter-spacing: 1px;
 }
 
 #photostyle{
     text-align: center;
+    size: 100%;
 }
 
 #dg{
-    background: #9238FF;
+    background: rgb(174, 128, 230);
     overflow: auto;
 }
 
 .tilt{
+    width: 45px;
+    height: 60px;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
@@ -65,6 +69,7 @@ a:hover, a:focus { /*при наведении на ссылку и при фо�
     color: #999;
     background-color: #333;
     border-color: #555;
+    height: 35px;
 }
 
 .btn-secondary{
@@ -79,5 +84,62 @@ a:hover, a:focus { /*при наведении на ссылку и при фо�
 }
 
 .row {
-    text-align: center!important;
+    text-align: center;
+}
+
+a.button1 {
+    position: center;
+    color:rgb(193, 36, 207);
+    text-align: center;
+    width: 50px;
+    height: 30px;
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+    background-color: #ef74ff;
+    border-radius: 20%;
+    font-size: 12px;
+    padding: 5px;
+}
+
+a.button1:hover, a.button1:focus { /*при наведении на ссылку и при фокусировке*/
+    color:#e0dddd;
+    background-color:rgb(139, 28, 184);
+}
+
+a.button2 {
+    position: center;
+    color:#2d2fbd;
+    text-align: center;
+    width: 50px;
+    height: 30px;
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+    background-color: #a0a6ff;
+    border-radius: 20%;
+    font-size: 12px;
+    padding: 5px;
+}
+
+a.button2:hover, a.button2:focus { /*при наведении на ссылку и при фокусировке*/
+    color:#e0dddd;
+    background-color:#2d2fbd;
+}
+
+.file_upload input[type=file]{
+    opacity: 0;
+}
+
+#IM{
+    border: 2px solid rgb(139, 28, 184);
+    background: rgb(174, 128, 230);
+    border-radius: 5px;
+    overflow: hidden;
+    width: 80%;
+    margin:0 auto;
+}
+
+#fiol{
+    background: rgb(174, 128, 230);
 }
