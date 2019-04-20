@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
+import React from 'react';
 
-class PhotoEdit extends Component{
+class PhotoEdit extends React.Component{
   render(){
     return(
-      <div class="container">
-        <div class="row">
-          <div class="col-4">
-            <a href = "#processing"><img src ="1.jpg" class="img-fluid" alt=""></img></a>
+      <div className="container" id="processing">
+        <div className="row">
+          <div className="col">
+            <button onClick={() => {this.props.updateImg("1.jpg",'')}}><img src ="1.jpg" className="img-fluid" alt=""></img></button>
           </div> 
-          <div class="col-4">
-            <a href = "#processing"><img src ="pic1.jpg" class="img-fluid" alt=""></img></a>
+          <div className="col">
+            <button onClick={() => {this.props.updateImg("pic1.jpg",'')}}><img src ="pic1.jpg" className="img-fluid" alt=""></img></button>
           </div>
-          <div class="col-4">
-            <a href = "#processing"><img src ="2.jpg" class="img-fluid" alt=""></img></a>
+          <div className="col">
+            <button onClick={() => {this.props.updateImg("2.jpg",'')}}><img src ="2.jpg" className="img-fluid" alt=""></img></button>
           </div>
         </div>
       </div>

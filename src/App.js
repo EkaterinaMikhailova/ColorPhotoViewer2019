@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Cap from "./components/cap";
 import Bottom from "./components/bottom";
 import FileInput from "./components/inputfile";
@@ -6,42 +6,60 @@ import PhotoEdit from "./components/photoEdit";
 import Photo from "./components/photo";
 import Filtres from "./components/filtres";
 import Save from "./components/save";
+import { injectIntl, defineMessages } from "react-intl";
 
-class App extends Component{
+const messages = defineMessages({
+  about: {
+    id: 'app.about',
+    defaultMessage: 'About text editor'
+  },
+  content: {
+    id: 'app.content',
+    defaultMessage: 'Online photo editor for PC. In our editor, a large selection of filters for the photo. You can choose one of the proposed photos or upload your own.'
+  }
+})
+
+class App extends React.Component{
+  state = {
+    imagePreviewUrl: '',
+    name: '1.jpg',
+    filter: 'normal',
+  };
+  updateImg = (value1, value2) => {
+    this.setState({ name: value1, imagePreviewUrl: value2 })
+  }
+  updateFilter = (value) => {
+    this.setState({filter: value});
+  }
   render(){ 
+    const {intl:{formatMessage}} = this.props;
     return(
       <div>
         <div id="home">
-          <Cap />
+          <Cap/>
           <br/>
-          <FileInput />
-          <PhotoEdit/>
+          <FileInput updateImg={this.updateImg}/>
+          <PhotoEdit updateImg={this.updateImg}/>
           <br/>
         </div>
-        <br/><br/>
-        <div id="processing">
-          <div class="container">
-            <div class="row">
-              <Photo />
-            </div> 
-            <div class="row">
-              <Filtres />
-            </div> 
-          </div>
-          <br/>
-          <Save/>
+        <div id="IM">
+          <Photo imagePreviewUrl={this.state.imagePreviewUrl} name={this.state.name} filter={this.state.filter}/>
+          <Filtres updateFilter={this.updateFilter}/>
         </div>
+        <br/> 
+        <Save imagePreviewUrl={this.state.imagePreviewUrl} name={this.state.name}/>
         <div id="about">
-          <div class="title">
-            <h2>О текстовом редакторе</h2>
+          <div className="title">
+            <h2>{formatMessage(messages.about)}</h2>
           </div >
-          <p class="text-center">Онлайн редактор фотографий для ПК. В нашем редакторе большой выбор фильтров для фото. Вы можете выбрать одно из предложенных фото или загрузить своё.</p> 
-          <footer class="footer"></footer>
+          <p className="text-center">
+            {formatMessage(messages.content)}
+          </p> 
+          <footer className="footer"></footer>
         </div>
         <Bottom />
-      </div>
+      </div> 
     );
   }
 }
-
-export default App;
+export default injectIntl(App);
