@@ -6,7 +6,6 @@ import { injectIntl, defineMessages } from 'react-intl'
 import Uniforms from './uniforms'
 import PropTypes from 'prop-types'
 
-/// transfer ///
 const messages = defineMessages({
   load: {
     id: 'app.load',
@@ -18,7 +17,9 @@ const messages = defineMessages({
   }
 })
 
-/// вызов функции по имени///
+/**
+ * Calls a function by name.
+ */
 function executeFunctionByName (functionName, context /*, args */) {
   var args = Array.prototype.slice.call(arguments, 2)
   var namespaces = functionName.split('.')
@@ -43,6 +44,9 @@ function preventDefaultForScrollKeys (e) {
     return false
   }
 }
+/**
+ * Function to disable the scroll
+ */
 function disableScroll () {
   if (window.addEventListener) { // older FF
     window.addEventListener('DOMMouseScroll', preventDefault, false)
@@ -52,6 +56,9 @@ function disableScroll () {
   window.ontouchmove = preventDefault // mobile
   document.onkeydown = preventDefaultForScrollKeys
 }
+/**
+ * Function to enable the scroll
+ */
 function enableScroll () {
   if (window.removeEventListener) {
     window.removeEventListener('DOMMouseScroll', preventDefault, false)
@@ -237,22 +244,37 @@ window.onload = function () {
   document.getElementById("shot").addEventListener('click', takeScreenshot)
   animate()
 }
-
+/**
+ * This function opens a new window with the image.
+ */
 function takeScreenshot() {
-    var w = window.open('', '');
-    w.document.title = "Screenshot";
-    var img = new Image();
-    renderer.render(scene, camera);
-    img.src = renderer.domElement.toDataURL();
-    w.document.body.appendChild(img); 
+  var w = window.open('', '');
+  w.document.title = "Screenshot";
+  var img = new Image();
+  renderer.render(scene, camera);
+  img.src = renderer.domElement.toDataURL();
+  w.document.body.appendChild(img); 
 }
 
+/**
+   * The props supported by the `Photo` component
+   *
+   * @typedef {Object} Photo~propTypes
+   * @property {string} imagePreviewUrl - call the parent function to change the current url image
+    * @property {string} name - call the parent function to change the current image
+    * @property {function} intl - to change language
+    * @property {string} filter - call the parent function to change the filter
+   */
+
+/**
+ * This class is designed to work with photos.
+ */
 class Photo extends React.Component {
   constructor () {
     super()
     window.m_url = this
   }
-  propTypes = {
+  /** * @type {Photo~propTypes} */ propTypes = {
     imagePreviewUrl: PropTypes.string,
     name: PropTypes.string,
     intl: PropTypes.func,
@@ -267,16 +289,16 @@ class Photo extends React.Component {
     }
     filter = this.props.filter
     return (
-    <div>
-      <div id='gui_css'></div>
-      <div id='imgPreview'><p>{formatMessage(messages.load)}</p></div>
-      <div className='row justify-content-center'>
-        <button type='button' className='btn btn-primary btn-icon' id='shot'>
-          {formatMessage(messages.save)}
-          <span className='icon'><i className='fas fa-download'></i></span>
-        </button>
+      <div>
+        <div id='gui_css'></div>
+        <div id='imgPreview'><p>{formatMessage(messages.load)}</p></div>
+        <div className='row justify-content-center'>
+          <button type='button' className='btn btn-primary btn-icon' id='shot'>
+            {formatMessage(messages.save)}
+            <span className='icon'><i className='fas fa-download'></i></span>
+          </button>
+        </div>
       </div>
-    </div>
     )
   }
 }

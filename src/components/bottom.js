@@ -1,5 +1,8 @@
 import React from 'react'
 
+/**
+ * This class is designed to display the bottom of the site.
+ */
 class Bottom extends React.Component {
   render () {
     return (

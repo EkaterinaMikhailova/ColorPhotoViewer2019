@@ -8,11 +8,25 @@ const messages = defineMessages({
     defaultMessage: 'Select file '
   }
 })
+/**
+ * The props supported by the `FileInput` component
+ *
+ * @typedef {Object} FileInput~propTypes
+ * @property {function} intl - to change language
+ * @property {function} updateImg - call the parent function to change the current image
+ */
+
+/**
+ * This class is designed to display a file open button and its operation.
+ */
 class FileInput extends React.Component {
-  propTypes = {
+  /** * @type {Filtres~propTypes} */ propTypes = {
     intl: PropTypes.func,
     updateImg: PropTypes.func
   }
+  /**
+   * Image reading
+   */
   handleImageChange (e) {
     const { target } = e
     if (target.value.length > 0) {

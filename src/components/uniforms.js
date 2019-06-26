@@ -4,6 +4,9 @@ var loader = new THREE.TextureLoader()
 loader.crossOrigin = ''
 var uniforms = {}
 
+/**
+ * This class provides textures for all filters.
+ */
 class Uniforms {
   constructor (map) {
     this.map = map

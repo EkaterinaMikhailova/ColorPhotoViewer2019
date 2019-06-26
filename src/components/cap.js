@@ -1,5 +1,8 @@
 import React from 'react'
 
+/**
+ * This class is designed to display the top of the site.
+ */
 class Cap extends React.Component {
   render () {
     return (

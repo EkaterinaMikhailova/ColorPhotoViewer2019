@@ -1,8 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+/**
+ * The props supported by the `Filtres` component
+ *
+ * @typedef {Object} Filtres~propTypes
+ * @property {function} updateFilter - call parent function to change current filter
+ */
+
+/**
+ * This class is designed to display buttons with filters.
+ */
 class Filtres extends React.Component {
-  propTypes = {
+  /** * @type {Filtres~propTypes} */ propTypes = {
     updateFilter: PropTypes.func
   }
   render () {

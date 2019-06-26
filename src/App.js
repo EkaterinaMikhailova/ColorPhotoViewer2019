@@ -21,18 +21,39 @@ const messages = defineMessages({
   }
 })
 
+/**
+ * The props supported by the `App` component
+ *
+ * @typedef {Object} App~propTypes
+ * @property {function} intl - to change language
+*/
+
+/**
+ * Main class
+ */
 class App extends React.Component {
-  propTypes = {
+  /** * @type {App~propTypes} */ propTypes = {
     intl: PropTypes.func
   }
+  /**
+   * @property {string} imagePreviewUrl - image url
+   * @property {string} name - image name
+   * @property {string} filter - filter
+   */
   state = {
     imagePreviewUrl: '',
     name: '1.jpg',
     filter: 'normal'
   }
+  /**
+   * Function to update the image
+   */
   updateImg = (value1, value2) => {
     this.setState({ name: value1, imagePreviewUrl: value2 })
   }
+  /**
+   * Function to update the filter
+   */
   updateFilter = (value) => {
     this.setState({ filter: value })
   }
@@ -66,4 +87,5 @@ class App extends React.Component {
     )
   }
 }
+
 export default injectIntl(App)
