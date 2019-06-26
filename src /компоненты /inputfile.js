@@ -34,7 +34,7 @@ class FileInput extends React.Component {
           </button>
         </div>
         <div className="file_upload">
-          <input className="fileInput" type="file" id="imgr"
+          <input className="fileInput" type="file" id="imgr"        <input className="fileInput" type="file"  accept=".jpg,.png" id="imgr"
             onChange={(e)=>this._handleImageChange(e)} />
         </div>
       </div>
