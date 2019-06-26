@@ -143,3 +143,10 @@ a.button2:hover, a.button2:focus { /*при наведении на ссылку
 #fiol{
     background: rgb(174, 128, 230);
 }
+
+#gui_css{
+    background: rgb(174, 128, 230);
+    overflow: hidden;
+    width: 100%;
+    height: 30px;
+}

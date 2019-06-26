@@ -32,10 +32,8 @@ You will see a window in the browser.
 7. The application runs on a mobile device and on most desktop browsers (ex. Google Chrome, Mozilla Firefox). 
 
 ## Limitations 
-
-- Unable to upload a photo larger than 1080 x 1080 px 
 - Currently only one texture is supported in one filter 
-- Only png format for image as input is supported 
+- Only .png and .jpg formats are supported for image as input
 
 ## Prerequisites 
 ### IDE 
@@ -52,58 +50,47 @@ node —version
 ``` 
 Stdout should be v6.10.3 (or higher). 
 
-### Install bower 
-``` 
-npm i -g bower 
-``` 
-
-### Install Gulp 
-``` 
-npm install -g gulp 
-``` 
-
 ### Install all node packages 
 ``` 
 npm install 
-bower install 
 ``` 
 After this command you will see node_module folder. 
 
 ## Command interface 
 
-### Run & Debug 
-``` 
-gulp serve 
-``` 
-If the browser does not start, then you need to open it manually and type in the address bar 
-``` 
-localhost:9000 
-``` 
+### Run application on the local host
 
-### Verify coding standard with ESLint 
-``` 
-gulp lint: js> style_err.txt 
-``` 
-After running the command in the file style_err.txt will be a list of stylistic and semantic errors. 
+```
+npm run start
+```
 
-### Running unit tests 
-For unit testing, the [mocha] framework (https://mochajs.org/) is used. 
-To run the tests run the command: 
-``` 
-gulp test 
-``` 
+After this command you can open Chrome browser and enter url *localhost:3000*.
 
-### Building autodocumentation 
-``` 
-gulp docs 
-``` 
-After launch, the result will be in the folder docs/auto. 
+### Check project source syntax
 
-### Building a project for putting it on the server 
-``` 
-gulp build 
-``` 
-The result will be in the folder dist. 
+```
+npm run lint
+```
+
+You should see no warnings and no errors.
+
+### Run project unit-tests
+
+```
+npm run test
+```
+
+You should see no errors, if all tests are passed.
+
+### Build project doc
+```
+npm run doc
+```
+
+### Build project bundle to upload app on server
+```
+npm run build
+```
 
 ## Similar projects 
 
