@@ -23,27 +23,36 @@
           vUv = uv;
           gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
       }
-
     </script>
     <script id="amaro" type="x-shader/x-fragment">
       precision highp float;
       varying highp vec2 vUv;
+
       uniform sampler2D inputImageTexture;
-      uniform sampler2D inputImageTexture2;
-      uniform sampler2D inputImageTexture3;
-      uniform sampler2D inputImageTexture4;
-      void main () {
-        vec4 texel = texture2D(inputImageTexture, vUv);
-        vec3 bbTexel = texture2D(inputImageTexture2, vUv).rgb;
-        texel.r = texture2D(inputImageTexture3, vec2(bbTexel.r, (1.0-texel.r))).r;
-        texel.g = texture2D(inputImageTexture3, vec2(bbTexel.g, (1.0-texel.g))).g;
-        texel.b = texture2D(inputImageTexture3, vec2(bbTexel.b, (1.0-texel.b))).b;
-        vec4 mapped;
-        mapped.r = texture2D(inputImageTexture4, vec2(texel.r, .83333)).r;
-        mapped.g = texture2D(inputImageTexture4, vec2(texel.g, .5)).g;
-        mapped.b = texture2D(inputImageTexture4, vec2(texel.b, .16666)).b;
-        mapped.a = 1.0;
-        gl_FragColor = mapped;
+      uniform sampler2D inputImageTexture2; //blowout;
+      uniform sampler2D inputImageTexture3; //overlay;
+      uniform sampler2D inputImageTexture4; //map
+
+      uniform float strength;
+
+      void main()
+      {
+          vec4 originColor = texture2D(inputImageTexture, vUv);
+          vec4 texel = texture2D(inputImageTexture, vUv);
+          vec3 bbTexel = texture2D(inputImageTexture2, vUv).rgb;
+
+          texel.r = texture2D(inputImageTexture3, vec2(bbTexel.r, texel.r)).r;
+          texel.g = texture2D(inputImageTexture3, vec2(bbTexel.g, texel.g)).g;
+          texel.b = texture2D(inputImageTexture3, vec2(bbTexel.b, texel.b)).b;
+
+          vec4 mapped;
+          mapped.r = texture2D(inputImageTexture4, vec2(texel.r, .16666)).r;
+          mapped.g = texture2D(inputImageTexture4, vec2(texel.g, .5)).g;
+          mapped.b = texture2D(inputImageTexture4, vec2(texel.b, .83333)).b;
+          mapped.a = 1.0;
+
+          mapped.rgb = mix(originColor.rgb, mapped.rgb, strength);
+          gl_FragColor = mapped;
       }
     </script>
     <script id="normal" type="x-shader/x-fragment">
@@ -59,60 +68,71 @@
       precision highp float;
       varying vec2 vUv;
       uniform sampler2D inputImageTexture;
-      uniform sampler2D inputImageTexture2;
-      uniform sampler2D inputImageTexture3;
-      uniform sampler2D inputImageTexture4;
-      uniform sampler2D inputImageTexture5;
-      uniform sampler2D inputImageTexture6;
+      uniform sampler2D inputImageTexture2;  //process
+      uniform sampler2D inputImageTexture3;  //blowout
+      uniform sampler2D inputImageTexture4;  //contrast
+      uniform sampler2D inputImageTexture5;  //luma
+      uniform sampler2D inputImageTexture6;  //screen
+
       mat3 saturateMatrix = mat3(
-                                1.105150,
-                                -0.044850,
-                                -0.046000,
-                                -0.088050,
-                                1.061950,
-                                -0.089200,
-                                -0.017100,
-                                -0.017100,
-                                1.132900);
+                                1.105150, -0.044850,-0.046000,
+                                -0.088050,1.061950,-0.089200,
+                                -0.017100,-0.017100,1.132900);
+
       vec3 luma = vec3(.3, .59, .11);
-      void main () {
-        vec3 texel = texture2D(inputImageTexture, vUv).rgb;
-        vec2 lookup;
-        lookup.y = 0.5;
-        lookup.x = texel.r;
-        texel.r = texture2D(inputImageTexture2, lookup).r;
-        lookup.x = texel.g;
-        texel.g = texture2D(inputImageTexture2, lookup).g;
-        lookup.x = texel.b;
-        texel.b = texture2D(inputImageTexture2, lookup).b;
-        texel = saturateMatrix * texel;
-        vec2 tc = (2.0 * vUv) - 1.0;
-        float d = dot(tc, tc);
-        vec3 sampled;
-        lookup.y = 0.5;
-        lookup.x = texel.r;
-        sampled.r = texture2D(inputImageTexture3, lookup).r;
-        lookup.x = texel.g;
-        sampled.g = texture2D(inputImageTexture3, lookup).g;
-        lookup.x = texel.b;
-        sampled.b = texture2D(inputImageTexture3, lookup).b;
-        float value = smoothstep(0.0, 1.0, d);
-        texel = mix(sampled, texel, value);
-        lookup.x = texel.r;
-        texel.r = texture2D(inputImageTexture4, lookup).r;
-        lookup.x = texel.g;
-        texel.g = texture2D(inputImageTexture4, lookup).g;
-        lookup.x = texel.b;
-        texel.b = texture2D(inputImageTexture4, lookup).b;
-        lookup.x = dot(texel, luma);
-        texel = mix(texture2D(inputImageTexture5, lookup).rgb, texel, .5);
-        lookup.x = texel.r;
-        texel.r = texture2D(inputImageTexture6, lookup).r;
-        lookup.x = texel.g;
-        texel.g = texture2D(inputImageTexture6, lookup).g;
-        lookup.x = texel.b;
-        texel.b = texture2D(inputImageTexture6, lookup).b;
-        gl_FragColor = vec4(texel, 1.0);
+
+      uniform float strength;
+
+      void main()
+      {
+          vec4 originColor = texture2D(inputImageTexture, vUv);
+          vec3 texel = texture2D(inputImageTexture, vUv).rgb;
+
+          vec2 lookup;
+          lookup.y = 0.5;
+          lookup.x = texel.r;
+          texel.r = texture2D(inputImageTexture2, lookup).r;
+          lookup.x = texel.g;
+          texel.g = texture2D(inputImageTexture2, lookup).g;
+          lookup.x = texel.b;
+          texel.b = texture2D(inputImageTexture2, lookup).b;
+
+          texel = saturateMatrix * texel;
+
+          vec2 tc = (2.0 * vUv) - 1.0;
+          float d = dot(tc, tc);
+          vec3 sampled;
+          lookup.y = 0.5;
+          lookup.x = texel.r;
+          sampled.r = texture2D(inputImageTexture3, lookup).r;
+          lookup.x = texel.g;
+          sampled.g = texture2D(inputImageTexture3, lookup).g;
+          lookup.x = texel.b;
+          sampled.b = texture2D(inputImageTexture3, lookup).b;
+          float value = smoothstep(0.0, 1.0, d);
+          texel = mix(sampled, texel, value);
+
+          lookup.x = texel.r;
+          texel.r = texture2D(inputImageTexture4, lookup).r;
+          lookup.x = texel.g;
+          texel.g = texture2D(inputImageTexture4, lookup).g;
+          lookup.x = texel.b;
+          texel.b = texture2D(inputImageTexture4, lookup).b;
+
+
+          lookup.x = dot(texel, luma);
+          texel = mix(texture2D(inputImageTexture5, lookup).rgb, texel, .5);
+
+          lookup.x = texel.r;
+          texel.r = texture2D(inputImageTexture6, lookup).r;
+          lookup.x = texel.g;
+          texel.g = texture2D(inputImageTexture6, lookup).g;
+          lookup.x = texel.b;
+          texel.b = texture2D(inputImageTexture6, lookup).b;
+
+          texel = mix(originColor.rgb, texel.rgb, strength);
+
+          gl_FragColor = vec4(texel, 1.0);
       }
     </script>
     <script id="earlybird" type="x-shader/x-fragment">
@@ -136,7 +156,9 @@
                                 1.265800);
       const vec3 rgbPrime = vec3(0.25098, 0.14640522, 0.0);
       const vec3 desaturate = vec3(.3, .59, .11);
+      uniform float strength;
       void main () {
+        vec4 originColor = texture2D(inputImageTexture, vUv);
         vec3 texel = texture2D(inputImageTexture, vUv).rgb;
         vec2 lookup;
         lookup.y = 0.5;
@@ -189,40 +211,54 @@
         texel.g = texture2D(inputImageTexture6, lookup).g;
         lookup.x = texel.b;
         texel.b = texture2D(inputImageTexture6, lookup).b;
+        texel = mix(originColor.rgb, texel.rgb, strength);
         gl_FragColor = vec4(texel, 1.0);
       }
     </script>
     <script id="hefe" type="x-shader/x-fragment">
       precision highp float;
+
       varying vec2 vUv;
+
       uniform sampler2D inputImageTexture;
-      uniform sampler2D inputImageTexture2;
-      uniform sampler2D inputImageTexture3;
-      uniform sampler2D inputImageTexture4;
-      uniform sampler2D inputImageTexture5;
-      uniform sampler2D inputImageTexture6;
-      void main () {
-        vec3 texel = texture2D(inputImageTexture, vUv).rgb;
-        vec3 edge = texture2D(inputImageTexture2, vUv).rgb;
-        texel = texel * edge;
-        texel = vec3(
-                       texture2D(inputImageTexture3, vec2(texel.r, .83333)).r,
-                       texture2D(inputImageTexture3, vec2(texel.g, .5)).g,
-                       texture2D(inputImageTexture3, vec2(texel.b, .16666)).b);
-        vec3 luma = vec3(.30, .59, .11);
-        vec3 gradSample = texture2D(inputImageTexture4, vec2(dot(luma, texel), .5)).rgb;
-        vec3 final = vec3(
-                            texture2D(inputImageTexture5, vec2(gradSample.r, (1.0-texel.r))).r,
-                            texture2D(inputImageTexture5, vec2(gradSample.g, (1.0-texel.g))).g,
-                            texture2D(inputImageTexture5, vec2(gradSample.b, (1.0-texel.b))).b
+      uniform sampler2D inputImageTexture2;  //edgeBurn
+      uniform sampler2D inputImageTexture3;  //hefeMap
+      uniform sampler2D inputImageTexture4;  //hefeGradientMap
+      uniform sampler2D inputImageTexture5;  //hefeSoftLight
+      uniform sampler2D inputImageTexture6;  //hefeMetal
+
+      uniform float strength;
+
+      void main()
+      {
+          vec4 originColor = texture2D(inputImageTexture, vUv);
+          vec3 texel = texture2D(inputImageTexture, vUv).rgb;
+          vec3 edge = texture2D(inputImageTexture2, vUv).rgb;
+          texel = texel * edge;
+          
+          texel = vec3(
+                      texture2D(inputImageTexture3, vec2(texel.r, .16666)).r,
+                      texture2D(inputImageTexture3, vec2(texel.g, .5)).g,
+                      texture2D(inputImageTexture3, vec2(texel.b, .83333)).b);
+          
+          vec3 luma = vec3(.30, .59, .11);
+          vec3 gradSample = texture2D(inputImageTexture4, vec2(dot(luma, texel), .5)).rgb;
+          vec3 final = vec3(
+                            texture2D(inputImageTexture5, vec2(gradSample.r, texel.r)).r,
+                            texture2D(inputImageTexture5, vec2(gradSample.g, texel.g)).g,
+                            texture2D(inputImageTexture5, vec2(gradSample.b, texel.b)).b
                             );
+          
           vec3 metal = texture2D(inputImageTexture6, vUv).rgb;
           vec3 metaled = vec3(
-                              texture2D(inputImageTexture5, vec2(metal.r, (1.0-texel.r))).r,
-                              texture2D(inputImageTexture5, vec2(metal.g, (1.0-texel.g))).g,
-                              texture2D(inputImageTexture5, vec2(metal.b, (1.0-texel.b))).b
+                              texture2D(inputImageTexture5, vec2(metal.r, texel.r)).r,
+                              texture2D(inputImageTexture5, vec2(metal.g, texel.g)).g,
+                              texture2D(inputImageTexture5, vec2(metal.b, texel.b)).b
                               );
-        gl_FragColor = vec4(metaled, 1.0);
+          
+          metaled.rgb = mix(originColor.rgb, metaled.rgb, strength);
+
+          gl_FragColor = vec4(metaled, 1.0);
       }
     </script>
     <script id="hudson" type="x-shader/x-fragment">
@@ -232,7 +268,9 @@
       uniform sampler2D inputImageTexture2;
       uniform sampler2D inputImageTexture3;
       uniform sampler2D inputImageTexture4;
+      uniform float strength;
       void main () {
+        vec4 originColor = texture2D(inputImageTexture, vUv);
         vec4 texel = texture2D(inputImageTexture, vUv);
         vec3 bbTexel = texture2D(inputImageTexture2, vUv).rgb;
         texel.r = texture2D(inputImageTexture3, vec2(bbTexel.r, (1.0-texel.r))).r;
@@ -243,19 +281,26 @@
         mapped.g = texture2D(inputImageTexture4, vec2(texel.g, .5)).g;
         mapped.b = texture2D(inputImageTexture4, vec2(texel.b, .16666)).b;
         mapped.a = 1.0;
+        mapped.rgb = mix(originColor.rgb, mapped.rgb, strength);
         gl_FragColor = mapped;
       }
     </script>
     <script id="inkwell" type="x-shader/x-fragment">
       precision highp float;
+
       varying vec2 vUv;
+
       uniform sampler2D inputImageTexture;
       uniform sampler2D inputImageTexture2;
-      void main () {
-        vec3 texel = texture2D(inputImageTexture, vUv).rgb;
-        texel = vec3(dot(vec3(0.3, 0.6, 0.1), texel));
-        texel = vec3(texture2D(inputImageTexture2, vec2(texel.r, .83333)).r);
-        gl_FragColor = vec4(texel, 1.0);
+      uniform float strength;
+      void main()
+      {
+        vec4 originColor = texture2D(inputImageTexture, vUv);
+          vec3 texel = texture2D(inputImageTexture, vUv).rgb;
+          texel = vec3(dot(vec3(0.3, 0.6, 0.1), texel));
+          texel = vec3(texture2D(inputImageTexture2, vec2(texel.r, .16666)).r);
+          texel.rgb = mix(originColor.rgb, texel.rgb, strength);
+          gl_FragColor = vec4(texel, 1.0);
       }
     </script>
     <script id="lokofi" type="x-shader/x-fragment">
@@ -264,7 +309,9 @@
       uniform sampler2D inputImageTexture;
       uniform sampler2D inputImageTexture2;
       uniform sampler2D inputImageTexture3;
+      uniform float strength;
       void main () {
+        vec4 originColor = texture2D(inputImageTexture, vUv);
         vec3 texel = texture2D(inputImageTexture, vUv).rgb;
         vec2 red = vec2(texel.r, 0.83333);
         vec2 green = vec2(texel.g, 0.5);
@@ -278,139 +325,181 @@
         texel.r = texture2D(inputImageTexture3, vec2(d, (1.0-texel.r))).r;
         texel.g = texture2D(inputImageTexture3, vec2(d, (1.0-texel.g))).g;
         texel.b  = texture2D(inputImageTexture3, vec2(d, (1.0-texel.b))).b;
+        texel.rgb = mix(originColor.rgb, texel.rgb, strength);
         gl_FragColor = vec4(texel,1.0);
       }
     </script>
     <script id="lordkelvin" type="x-shader/x-fragment">
       precision highp float;
+
       varying vec2 vUv;
+
       uniform sampler2D inputImageTexture;
       uniform sampler2D inputImageTexture2;
-      void main () {
-        vec3 texel = texture2D(inputImageTexture, vUv).rgb;
-        vec2 lookup;
-        lookup.y = .5;
-        lookup.x = texel.r;
-        texel.r = texture2D(inputImageTexture2, lookup).r;
-        lookup.x = texel.g;
-        texel.g = texture2D(inputImageTexture2, lookup).g;
-        lookup.x = texel.b;
-        texel.b = texture2D(inputImageTexture2, lookup).b;
-        gl_FragColor = vec4(texel, 1.0);
+      uniform float strength;
+      void main()
+      {
+        vec4 originColor = texture2D(inputImageTexture, vUv);
+          vec3 texel = texture2D(inputImageTexture, vUv).rgb;
+          vec2 lookup;
+          lookup.y = .5;
+
+          lookup.x = texel.r;
+          texel.r = texture2D(inputImageTexture2, lookup).r;
+
+          lookup.x = texel.g;
+          texel.g = texture2D(inputImageTexture2, lookup).g;
+
+          lookup.x = texel.b;
+          texel.b = texture2D(inputImageTexture2, lookup).b;
+          texel.rgb = mix(originColor.rgb, texel.rgb, strength);
+          gl_FragColor = vec4(texel, 1.0);
       }
     </script>
     <script id="rise" type="x-shader/x-fragment">
       precision highp float;
+
       varying vec2 vUv;
-      uniform sampler2D inputImageTexture;
-      uniform sampler2D inputImageTexture2;
-      uniform sampler2D inputImageTexture3;
-      uniform sampler2D inputImageTexture4;
-      void main () {
-        vec4 texel = texture2D(inputImageTexture, vUv);
-        vec3 bbTexel = texture2D(inputImageTexture2, vUv).rgb;
-        texel.r = texture2D(inputImageTexture3, vec2(bbTexel.r, (1.0-texel.r))).r;
-        texel.g = texture2D(inputImageTexture3, vec2(bbTexel.g, (1.0-texel.g))).g;
-        texel.b = texture2D(inputImageTexture3, vec2(bbTexel.b, (1.0-texel.b))).b;
-        vec4 mapped;
-        mapped.r = texture2D(inputImageTexture4, vec2(texel.r, .83333)).r;
-        mapped.g = texture2D(inputImageTexture4, vec2(texel.g, .5)).g;
-        mapped.b = texture2D(inputImageTexture4, vec2(texel.b, .16666)).b;
-        mapped.a = 1.0;
-        gl_FragColor = mapped;
+
+      uniform sampler2D inputImageTexture; //blowout;
+      uniform sampler2D inputImageTexture2; //blowout;
+      uniform sampler2D inputImageTexture3; //overlay;
+      uniform sampler2D inputImageTexture4; //map
+
+      uniform float strength;
+
+      void main()
+      {
+          vec4 originColor = texture2D(inputImageTexture, vUv);
+          vec4 texel = texture2D(inputImageTexture, vUv);
+          vec3 bbTexel = texture2D(inputImageTexture2, vUv).rgb;
+
+          texel.r = texture2D(inputImageTexture3, vec2(bbTexel.r, texel.r)).r;
+          texel.g = texture2D(inputImageTexture3, vec2(bbTexel.g, texel.g)).g;
+          texel.b = texture2D(inputImageTexture3, vec2(bbTexel.b, texel.b)).b;
+
+          vec4 mapped;
+          mapped.r = texture2D(inputImageTexture4, vec2(texel.r, .16666)).r;
+          mapped.g = texture2D(inputImageTexture4, vec2(texel.g, .5)).g;
+          mapped.b = texture2D(inputImageTexture4, vec2(texel.b, .83333)).b;
+          mapped.a = 1.0;
+
+          mapped.rgb = mix(originColor.rgb, mapped.rgb, strength);
+
+          gl_FragColor = mapped;
       }
     </script>
     <script id="sierra" type="x-shader/x-fragment">
       precision highp float;
+
       varying vec2 vUv;
+
       uniform sampler2D inputImageTexture;
-      uniform sampler2D inputImageTexture2;
-      uniform sampler2D inputImageTexture3;
-      uniform sampler2D inputImageTexture4;
-      void main () {
-        vec4 texel = texture2D(inputImageTexture, vUv);
-        vec3 bbTexel = texture2D(inputImageTexture2, vUv).rgb;
-        texel.r = texture2D(inputImageTexture3, vec2(bbTexel.r, (1.0-texel.r))).r;
-        texel.g = texture2D(inputImageTexture3, vec2(bbTexel.g, (1.0-texel.g))).g;
-        texel.b = texture2D(inputImageTexture3, vec2(bbTexel.b, (1.0-texel.b))).b;
-        vec4 mapped;
-        mapped.r = texture2D(inputImageTexture4, vec2(texel.r, .83333)).r;
-        mapped.g = texture2D(inputImageTexture4, vec2(texel.g, .5)).g;
-        mapped.b = texture2D(inputImageTexture4, vec2(texel.b, .16666)).b;
-        mapped.a = 1.0;
-        gl_FragColor = mapped;
+      uniform sampler2D inputImageTexture2; //blowout;
+      uniform sampler2D inputImageTexture3; //overlay;
+      uniform sampler2D inputImageTexture4; //map
+
+      uniform float strength;
+
+      void main()
+      {
+          vec4 originColor = texture2D(inputImageTexture, vUv);
+          vec4 texel = texture2D(inputImageTexture, vUv);
+          vec3 bbTexel = texture2D(inputImageTexture2, vUv).rgb;
+
+          texel.r = texture2D(inputImageTexture3, vec2(bbTexel.r, texel.r)).r;
+          texel.g = texture2D(inputImageTexture3, vec2(bbTexel.g, texel.g)).g;
+          texel.b = texture2D(inputImageTexture3, vec2(bbTexel.b, texel.b)).b;
+
+          vec4 mapped;
+          mapped.r = texture2D(inputImageTexture4, vec2(texel.r, .16666)).r;
+          mapped.g = texture2D(inputImageTexture4, vec2(texel.g, .5)).g;
+          mapped.b = texture2D(inputImageTexture4, vec2(texel.b, .83333)).b;
+          mapped.a = 1.0;
+
+          mapped.rgb = mix(originColor.rgb, mapped.rgb, strength);
+          gl_FragColor = mapped;
       }
     </script>
     <script id="toaster" type="x-shader/x-fragment">
       precision highp float;
+
       varying vec2 vUv;
+
       uniform sampler2D inputImageTexture;
-      uniform sampler2D inputImageTexture2;
-      uniform sampler2D inputImageTexture3;
-      uniform sampler2D inputImageTexture4;
-      uniform sampler2D inputImageTexture5;
-      uniform sampler2D inputImageTexture6;
-      void main () {
-        lowp vec3 texel;
-        mediump vec2 lookup;
-        vec2 blue;
-        vec2 green;
-        vec2 red;
-        lowp vec4 tmpvar_1;
-        tmpvar_1 = texture2D (inputImageTexture, vUv);
-        texel = tmpvar_1.xyz;
-        lowp vec4 tmpvar_2;
-        tmpvar_2 = texture2D (inputImageTexture2, vUv);
-        lowp vec2 tmpvar_3;
-        tmpvar_3.x = tmpvar_2.x;
-        tmpvar_3.y = tmpvar_1.x;
-        texel.x = texture2D (inputImageTexture3, tmpvar_3).x;
-        lowp vec2 tmpvar_4;
-        tmpvar_4.x = tmpvar_2.y;
-        tmpvar_4.y = tmpvar_1.y;
-        texel.y = texture2D (inputImageTexture3, tmpvar_4).y;
-        lowp vec2 tmpvar_5;
-        tmpvar_5.x = tmpvar_2.z;
-        tmpvar_5.y = tmpvar_1.z;
-        texel.z = texture2D (inputImageTexture3, tmpvar_5).z;
-        red.x = texel.x;
-        red.y = 0.16666;
-        green.x = texel.y;
-        green.y = 0.5;
-        blue.x = texel.z;
-        blue.y = 0.833333;
-        texel.x = texture2D (inputImageTexture4, red).x;
-        texel.y = texture2D (inputImageTexture4, green).y;
-        texel.z = texture2D (inputImageTexture4, blue).z;
-        mediump vec2 tmpvar_6;
-        tmpvar_6 = ((2.0 * vUv) - 1.0);
-        mediump vec2 tmpvar_7;
-        tmpvar_7.x = dot (tmpvar_6, tmpvar_6);
-        tmpvar_7.y = texel.x;
-        lookup = tmpvar_7;
-        texel.x = texture2D (inputImageTexture5, tmpvar_7).x;
-        lookup.y = texel.y;
-        texel.y = texture2D (inputImageTexture5, lookup).y;
-        lookup.y = texel.z;
-        texel.z = texture2D (inputImageTexture5, lookup).z;
-        red.x = texel.x;
-        green.x = texel.y;
-        blue.x = texel.z;
-        texel.x = texture2D (inputImageTexture6, red).x;
-        texel.y = texture2D (inputImageTexture6, green).y;
-        texel.z = texture2D (inputImageTexture6, blue).z;
-        lowp vec4 tmpvar_8;
-        tmpvar_8.w = 1.0;
-        tmpvar_8.xyz = texel;
-        gl_FragColor = tmpvar_8;
+      uniform sampler2D inputImageTexture2; //toaster_metal
+      uniform sampler2D inputImageTexture3; //toaster_soft_light
+      uniform sampler2D inputImageTexture4; //toaster_curves
+      uniform sampler2D inputImageTexture5; //toaster_overlay_map_warm
+      uniform sampler2D inputImageTexture6; //toaster_color_shift
+      uniform float strength;
+      void main()
+      {
+        vec4 originColor = texture2D(inputImageTexture, vUv);
+          mediump vec3 texel;
+          mediump vec2 lookup;
+          vec2 blue;
+          vec2 green;
+          vec2 red;
+          mediump vec4 tmpvar_1;
+          tmpvar_1 = texture2D (inputImageTexture, vUv);
+          texel = tmpvar_1.xyz;
+          mediump vec4 tmpvar_2;
+          tmpvar_2 = texture2D (inputImageTexture2, vUv);
+          mediump vec2 tmpvar_3;
+          tmpvar_3.x = tmpvar_2.x;
+          tmpvar_3.y = tmpvar_1.x;
+          texel.x = texture2D (inputImageTexture3, tmpvar_3).x;
+          mediump vec2 tmpvar_4;
+          tmpvar_4.x = tmpvar_2.y;
+          tmpvar_4.y = tmpvar_1.y;
+          texel.y = texture2D (inputImageTexture3, tmpvar_4).y;
+          mediump vec2 tmpvar_5;
+          tmpvar_5.x = tmpvar_2.z;
+          tmpvar_5.y = tmpvar_1.z;
+          texel.z = texture2D (inputImageTexture3, tmpvar_5).z;
+          red.x = texel.x;
+          red.y = 0.16666;
+          green.x = texel.y;
+          green.y = 0.5;
+          blue.x = texel.z;
+          blue.y = 0.833333;
+          texel.x = texture2D (inputImageTexture4, red).x;
+          texel.y = texture2D (inputImageTexture4, green).y;
+          texel.z = texture2D (inputImageTexture4, blue).z;
+          mediump vec2 tmpvar_6;
+          tmpvar_6 = ((2.0 * vUv) - 1.0);
+          mediump vec2 tmpvar_7;
+          tmpvar_7.x = dot (tmpvar_6, tmpvar_6);
+          tmpvar_7.y = texel.x;
+          lookup = tmpvar_7;
+          texel.x = texture2D (inputImageTexture5, tmpvar_7).x;
+          lookup.y = texel.y;
+          texel.y = texture2D (inputImageTexture5, lookup).y;
+          lookup.y = texel.z;
+          texel.z = texture2D (inputImageTexture5, lookup).z;
+          red.x = texel.x;
+          green.x = texel.y;
+          blue.x = texel.z;
+          texel.x = texture2D (inputImageTexture6, red).x;
+          texel.y = texture2D (inputImageTexture6, green).y;
+          texel.z = texture2D (inputImageTexture6, blue).z;
+          mediump vec4 tmpvar_8;
+          tmpvar_8.w = 1.0;
+          tmpvar_8.xyz = texel;
+          tmpvar_8.rgb = mix(originColor.rgb, tmpvar_8.rgb, strength);
+          gl_FragColor = tmpvar_8;
       }
     </script>
     <script id="valencia" type="x-shader/x-fragment">
       precision highp float;
+
       varying vec2 vUv;
+
       uniform sampler2D inputImageTexture;
-      uniform sampler2D inputImageTexture2;
-      uniform sampler2D inputImageTexture3;
+      uniform sampler2D inputImageTexture2; //map
+      uniform sampler2D inputImageTexture3; //gradMap
+
       mat3 saturateMatrix = mat3(
                                 1.1402,
                                 -0.0598,
@@ -421,60 +510,103 @@
                                 -0.0228,
                                 -0.0228,
                                 1.1772);
+
       vec3 lumaCoeffs = vec3(.3, .59, .11);
-      void main () {
-        vec3 texel = texture2D(inputImageTexture, vUv).rgb;
-        texel = vec3(
-                    texture2D(inputImageTexture2, vec2(texel.r, .8333333)).r,
-                    texture2D(inputImageTexture2, vec2(texel.g, .5)).g,
-                    texture2D(inputImageTexture2, vec2(texel.b, .1666666)).b
-                    );
-        texel = saturateMatrix * texel;
-        float luma = dot(lumaCoeffs, texel);
-        texel = vec3(
-                    texture2D(inputImageTexture3, vec2(luma, (1.0-texel.r))).r,
-                    texture2D(inputImageTexture3, vec2(luma, (1.0-texel.g))).g,
-                    texture2D(inputImageTexture3, vec2(luma, (1.0-texel.b))).b);
-        gl_FragColor = vec4(texel, 1.0);
+
+      uniform float strength;
+
+      void main()
+      {
+          vec4 originColor = texture2D(inputImageTexture, vUv);
+          vec3 texel = texture2D(inputImageTexture, vUv).rgb;
+
+          texel = vec3(
+                      texture2D(inputImageTexture2, vec2(texel.r, .1666666)).r,
+                      texture2D(inputImageTexture2, vec2(texel.g, .5)).g,
+                      texture2D(inputImageTexture2, vec2(texel.b, .8333333)).b
+                      );
+
+          texel = saturateMatrix * texel;
+          float luma = dot(lumaCoeffs, texel);
+          texel = vec3(
+                      texture2D(inputImageTexture3, vec2(luma, texel.r)).r,
+                      texture2D(inputImageTexture3, vec2(luma, texel.g)).g,
+                      texture2D(inputImageTexture3, vec2(luma, texel.b)).b);
+
+          texel.rgb = mix(originColor.rgb, texel.rgb, strength);
+          gl_FragColor = vec4(texel, 1.0);
       }
     </script>
     <script id="walden" type="x-shader/x-fragment">
       precision highp float;
+
       varying vec2 vUv;
+
       uniform sampler2D inputImageTexture;
-      uniform sampler2D inputImageTexture2;
-      uniform sampler2D inputImageTexture3;
-      void main () {
-        vec3 texel = texture2D(inputImageTexture, vUv).rgb;
-        texel = vec3(
-                    texture2D(inputImageTexture2, vec2(texel.r, .83333)).r,
-                    texture2D(inputImageTexture2, vec2(texel.g, .5)).g,
-                    texture2D(inputImageTexture2, vec2(texel.b, .16666)).b);
-        vec2 tc = (2.0 * vUv) - 1.0;
-        float d = dot(tc, tc);
-        texel.r = texture2D(inputImageTexture3, vec2(d, (1.0-texel.r))).r;
-        texel.g = texture2D(inputImageTexture3, vec2(d, (1.0-texel.g))).g;
-        texel.b  = texture2D(inputImageTexture3, vec2(d, (1.0-texel.b))).b;
-        gl_FragColor = vec4(texel, 1.0);
+      uniform sampler2D inputImageTexture2; //map
+      uniform sampler2D inputImageTexture3; //vigMap
+
+      uniform float strength;
+      
+      void main()
+      {
+          vec4 originColor = texture2D(inputImageTexture, vUv);
+          vec3 texel = texture2D(inputImageTexture, vUv).rgb;
+          
+          texel = vec3(
+                        texture2D(inputImageTexture2, vec2(texel.r, .16666)).r,
+                        texture2D(inputImageTexture2, vec2(texel.g, .5)).g,
+                        texture2D(inputImageTexture2, vec2(texel.b, .83333)).b);
+          
+          vec2 tc = (2.0 * vUv) - 1.0;
+          float d = dot(tc, tc);
+          vec2 lookup = vec2(d, texel.r);
+          texel.r = texture2D(inputImageTexture3, lookup).r;
+          lookup.y = texel.g;
+          texel.g = texture2D(inputImageTexture3, lookup).g;
+          lookup.y = texel.b;
+          texel.b	= texture2D(inputImageTexture3, lookup).b;
+          
+          texel.rgb = mix(originColor.rgb, texel.rgb, strength);
+
+          gl_FragColor = vec4(texel, 1.0);
       }
     </script>
     <script id="xproII" type="x-shader/x-fragment">
       precision highp float;
+
       varying vec2 vUv;
+
       uniform sampler2D inputImageTexture;
-      uniform sampler2D inputImageTexture2;
-      uniform sampler2D inputImageTexture3;
-      void main () {
-        vec3 texel = texture2D(inputImageTexture, vUv).rgb;
-        vec2 tc = (2.0 * vUv) - 1.0;
-        float d = dot(tc, tc);
-        texel.r = texture2D(inputImageTexture3, vec2(d, (1.0-texel.r))).r;
-        texel.g = texture2D(inputImageTexture3, vec2(d, (1.0-texel.g))).g;
-        texel.b  = texture2D(inputImageTexture3, vec2(d, (1.0-texel.b))).b;
-        texel.r = texture2D(inputImageTexture2, vec2(texel.r, .83333)).r;
-        texel.g = texture2D(inputImageTexture2, vec2(texel.g, .5)).g;
-        texel.b = texture2D(inputImageTexture2, vec2(texel.b, .16666)).b;
-        gl_FragColor = vec4(texel, 1.0);
+      uniform sampler2D inputImageTexture2; //map
+      uniform sampler2D inputImageTexture3; //vigMap
+
+      uniform float strength;
+
+      void main()
+      {
+          vec4 originColor = texture2D(inputImageTexture, vUv);
+          vec3 texel = texture2D(inputImageTexture, vUv).rgb;
+
+          vec2 tc = (2.0 * vUv) - 1.0;
+          float d = dot(tc, tc);
+          vec2 lookup = vec2(d, texel.r);
+          texel.r = texture2D(inputImageTexture3, lookup).r;
+          lookup.y = texel.g;
+          texel.g = texture2D(inputImageTexture3, lookup).g;
+          lookup.y = texel.b;
+          texel.b	= texture2D(inputImageTexture3, lookup).b;
+
+          vec2 red = vec2(texel.r, 0.16666);
+          vec2 green = vec2(texel.g, 0.5);
+          vec2 blue = vec2(texel.b, .83333);
+          texel.r = texture2D(inputImageTexture2, red).r;
+          texel.g = texture2D(inputImageTexture2, green).g;
+          texel.b = texture2D(inputImageTexture2, blue).b;
+          
+          texel.rgb = mix(originColor.rgb, texel.rgb, strength);
+          
+          gl_FragColor = vec4(texel, 1.0);
       }
     </script>
      <div id="root"></div>

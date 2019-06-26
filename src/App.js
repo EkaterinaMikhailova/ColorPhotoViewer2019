@@ -1,12 +1,14 @@
-import React from 'react';
-import Cap from "./components/cap";
-import Bottom from "./components/bottom";
-import FileInput from "./components/inputfile";
-import PhotoEdit from "./components/photoEdit";
-import Photo from "./components/photo";
-import Filtres from "./components/filtres";
-import Save from "./components/save";
-import { injectIntl, defineMessages } from "react-intl";
+/* eslint-disable no-unused-vars */
+import React from 'react'
+// eslint-disable-next-line no-unused-vars
+import Cap from './components/cap'
+import Bottom from './components/bottom'
+import FileInput from './components/inputfile'
+import PhotoEdit from './components/photoEdit'
+import Photo from './components/photo'
+import Filtres from './components/filtres'
+import { injectIntl, defineMessages } from 'react-intl'
+import PropTypes from 'prop-types'
 
 const messages = defineMessages({
   about: {
@@ -19,47 +21,49 @@ const messages = defineMessages({
   }
 })
 
-class App extends React.Component{
+class App extends React.Component {
+  propTypes = {
+    intl: PropTypes.func
+  }
   state = {
     imagePreviewUrl: '',
     name: '1.jpg',
-    filter: 'normal',
-  };
+    filter: 'normal'
+  }
   updateImg = (value1, value2) => {
     this.setState({ name: value1, imagePreviewUrl: value2 })
   }
   updateFilter = (value) => {
-    this.setState({filter: value});
+    this.setState({ filter: value })
   }
-  render(){ 
-    const {intl:{formatMessage}} = this.props;
-    return(
+  render () {
+    const { intl: { formatMessage } } = this.props
+    return (
       <div>
-        <div id="home">
+        <div id='home'>
           <Cap/>
           <br/>
           <FileInput updateImg={this.updateImg}/>
           <PhotoEdit updateImg={this.updateImg}/>
           <br/>
         </div>
-        <div id="IM">
+        <div id='IM'>
           <Photo imagePreviewUrl={this.state.imagePreviewUrl} name={this.state.name} filter={this.state.filter}/>
           <Filtres updateFilter={this.updateFilter}/>
         </div>
-        <br/> 
-        <Save imagePreviewUrl={this.state.imagePreviewUrl} name={this.state.name}/>
-        <div id="about">
-          <div className="title">
+        <br/>
+        <div id='about'>
+          <div className='title'>
             <h2>{formatMessage(messages.about)}</h2>
           </div >
-          <p className="text-center">
+          <p className='text-center'>
             {formatMessage(messages.content)}
-          </p> 
-          <footer className="footer"></footer>
+          </p>
+          <footer className='footer'></footer>
         </div>
         <Bottom />
-      </div> 
-    );
+      </div>
+    )
   }
 }
-export default injectIntl(App);
+export default injectIntl(App)
