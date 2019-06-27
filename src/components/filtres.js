@@ -111,6 +111,24 @@ class Filtres extends React.Component {
                     <img src='DSFilterTileXpro2.png' width='80px' height='80px' alt=''/></button>
                 </div>
               </th>
+              <th>
+                <div className='tilt'>
+                  <button id='fiol' onClick={() => { this.props.updateFilter('f1977') }}>
+                    <img src='DSFilterTile1977.png' width='80px' height='80px' alt=''/></button>
+                </div>
+              </th>
+              <th>
+                <div className='tilt'>
+                  <button id='fiol' onClick={() => { this.props.updateFilter('nashville') }}>
+                    <img src='DSFilterTileNashville.png' width='80px' height='80px' alt=''/></button>
+                </div>
+              </th>
+              <th>
+                <div className='tilt'>
+                  <button id='fiol' onClick={() => { this.props.updateFilter('sutro') }}>
+                    <img src='DSFilterTileSutro.png' width='80px' height='80px' alt=''/></button>
+                </div>
+              </th>
             </tr>
           </tbody >
         </table>

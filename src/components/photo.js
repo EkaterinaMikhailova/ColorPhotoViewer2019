@@ -199,7 +199,9 @@ window.onload = function () {
       prevf = filter
       uniforms = executeFunctionByName(filter, new Uniforms(material.map), '')
       if (uniforms.strength) {
-        if (controllerV) gui.remove(controllerV)
+        if (controllerV) {
+          gui.remove(controllerV)
+        }
         controllerV = gui.add(uniforms.strength, 'value', -0.3, 0.3)
         if (controllerV) {
           controllerV.onChange(function (value) {
@@ -229,6 +231,20 @@ window.onload = function () {
         geometry = new THREE.PlaneGeometry(width, width * iwh, 15)
         material.map = loader.load(img.src)
         uniforms = executeFunctionByName(filter, new Uniforms(material.map), '')
+        if (uniforms.strength) {
+          if (controllerV) {
+            gui.remove(controllerV)
+          }
+          controllerV = gui.add(uniforms.strength, 'value', -0.3, 0.3)
+          if (controllerV) {
+            controllerV.onChange(function (value) {
+              uniforms.strength.value = value
+            })
+          }
+        } else {
+          if (controllerV) gui.remove(controllerV)
+          controllerV = null
+        }
         mesh.geometry = geometry
         mesh.material = new THREE.ShaderMaterial({ uniforms: uniforms,
           vertexShader: document.getElementById('vertex').innerHTML,

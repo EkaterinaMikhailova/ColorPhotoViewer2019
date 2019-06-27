@@ -156,6 +156,34 @@ class Uniforms {
     }
     return (uniforms)
   }
+  f1977() {
+    uniforms = {
+      inputImageTexture: { type: 't', value: this.map },
+      inputImageTexture2: { type: 't', value: loader.load('resources/1977map.png') },
+      strength: { type: 'float', value: -0.3 }
+    }
+    return (uniforms)
+  }
+  nashville() {
+    uniforms = {
+      inputImageTexture: { type: 't', value: this.map },
+      inputImageTexture2: { type: 't', value: loader.load('resources/nashvilleMap.png') },
+      strength: { type: 'float', value: -0.3 }
+    }
+    return (uniforms)
+  }
+  sutro() {
+    uniforms = {
+      inputImageTexture: { type: 't', value: this.map },
+      inputImageTexture2: { type: 't', value: loader.load('resources/vignetteMap.png') },
+      inputImageTexture3: { type: 't', value: loader.load('resources/sutroMetal.png') },
+      inputImageTexture4: { type: 't', value: loader.load('resources/softLight.png') },
+      inputImageTexture5: { type: 't', value: loader.load('resources/sutroEdgeBurn.png') },
+      inputImageTexture6: { type: 't', value: loader.load('resources/sutroCurves.png') },
+      strength: { type: 'float', value: -0.3 }
+    }
+    return (uniforms)
+  }
 }
 
 export default Uniforms

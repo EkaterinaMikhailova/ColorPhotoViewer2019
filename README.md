@@ -3,23 +3,26 @@
 ![](https://cdn1.savepice.ru/uploads/2019/2/22/48c14a4678374c447adaec1dd1df2313-full.jpg) 
 
 ## Purpos 
-Color Photo Editor is a project designed on ReactJS to demonstrate 2D effects on images. It implemented 14 basic Instagram filters, including *Sierra*, the latest one. 
+Color Photo Editor is a project designed on ReactJS to demonstrate 2D effects on images. It implemented 17 basic Instagram filters, including *Sierra*, the latest one. 
 
 ### The project includes the following filters: 
+- *1977* 
 - *Amaro* 
 - *Brannan* 
 - *Earlybird* 
 - *Hefe* 
 - *Hudson* 
 - *Inkwell* 
-- *Lomo* 
-- *Myfair* 
+- *Lomofi* 
+- *LordKelvin* 
+- *Nashville* 
 - *Rise* 
 - *Sierra* 
-- *Toster* 
+- *Sutro* 
+- *Toaster* 
 - *Valencia* 
-- *Willow* 
-- *XPro* 
+- *Walden* 
+- *Xproll* 
 
 ### How to use the web application? 
 1. In order to run the web application you must open a file named "index.html". 
