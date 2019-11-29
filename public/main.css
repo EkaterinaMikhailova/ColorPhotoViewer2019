@@ -143,3 +143,14 @@ a.button2:hover, a.button2:focus { /*при наведении на ссылку
 #fiol{
     background: rgb(174, 128, 230);
 }
+
+#amaro, #sutro, #nashville, #f1977, #xproII, #walden, #valencia, #toaster, #sierra, #rise, #lordkelvin, #lokofi, #inkwell, #hudson, #hefe, #earlybird, #normal, #brannan{
+    background: rgb(174, 128, 230);
+}
+
+#gui_css{
+    background: rgb(174, 128, 230);
+    overflow: hidden;
+    width: 100%;
+    height: 30px;
+}
