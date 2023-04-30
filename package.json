@@ -33,7 +33,7 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "extract-react-intl-messages": "^1.0.1",
+    "extract-react-intl-messages": "^4.1.1",
     "react-intl-cra": "^0.3.4",
     "react-intl-translations-manager": "^5.0.3"
   }
